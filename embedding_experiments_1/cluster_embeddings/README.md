@@ -21,15 +21,15 @@ python cluster_chats.py \
   --batch 1024 \
   --best-k --verbose
 ```
-	•	Swap --model for any embedding GGUF you prefer.
-	•	Raise or lower --batch as long as it exceeds your longest prompt tokens.
-	•	--dump-embeddings out.jsonl will save every {text, embedding} line.
 
-This version avoids every issue we debugged:
-	•	uses a list for create_embedding
-	•	mean-pools token vectors → fixed-length row
-	•	catches JSON errors
-	•	optional down-projection (output_dim) if model supports it
-	•	simple, restart-safe JSONL dump
+---
 
-Happy clustering!
+Swap --model for any embedding GGUF you prefer.
+
+Raise or lower --batch as long as it exceeds your longest prompt tokens.
+
+--dump-embeddings out.jsonl will save every {text, embedding} line.
+
+---
+
+happy clustering!
