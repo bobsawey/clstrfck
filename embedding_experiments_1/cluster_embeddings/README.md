@@ -14,12 +14,13 @@
 
 # ⌨️
 
+```shell
 python cluster_chats.py \
   --jsonl conversation_turns.jsonl \
   --model /path/to/bge-base-en-v1.5.Q4_K_M.gguf \
   --batch 1024 \
   --best-k --verbose
-
+```
 	•	Swap --model for any embedding GGUF you prefer.
 	•	Raise or lower --batch as long as it exceeds your longest prompt tokens.
 	•	--dump-embeddings out.jsonl will save every {text, embedding} line.
