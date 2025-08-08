@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chat Conversation Viewer</title>
+  <style>
+    :root {
+      --bg: #0b0d11; --panel: #12151c; --muted:#98a2b3; --text:#e6eaf2; --line:#202532; --accent:#8b5cf6; --badge:#1f2937;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"}
+    a{color:#93c5fd;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .app{display:grid;grid-template-rows:auto 1fr; height:100%}
+    header{display:flex;gap:12px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:5}
+    header h1{font-size:14px;margin:0;font-weight:600;letter-spacing:.2px;opacity:.9}
+    header .grow{flex:1}
+    .hint{color:var(--muted);font-size:12px}
+    .layout{display:grid;grid-template-columns: 320px 1fr; height:100%}
+    .sidebar{border-right:1px solid var(--line); overflow:auto; background:var(--panel)}
+    .main{overflow:auto}
+    .section{padding:12px}
+    .card{border:1px solid var(--line);background:#0e1118;border-radius:10px;margin:10px 12px;padding:10px}
+    .conv{display:flex;flex-direction:column;gap:4px;padding:10px;border:1px solid transparent;border-radius:10px;margin:8px 12px;cursor:pointer;background:#0c0f15}
+    .conv:hover{border-color:#2a3142}
+    .conv.active{border-color:var(--accent);box-shadow:0 0 0 1px color-mix(in oklab, var(--accent) 60%, transparent)}
+    .conv .title{font-weight:600}
+    .conv .meta{color:var(--muted);font-size:12px;display:flex;gap:8px;flex-wrap:wrap}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;padding:10px;border-bottom:1px solid var(--line);background:#0e121a;position:sticky;top:0;z-index:4}
+    input[type="text"], input[type="search"], .fake-input{background:#0b0e15;border:1px solid #252b39;color:var(--text);padding:8px 10px;border-radius:8px;outline:none;min-width:220px}
+    .btn{background:#111827;border:1px solid #2a3142;color:#cfd5e3;padding:8px 10px;border-radius:8px;cursor:pointer}
+    .btn:hover{background:#172033}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border-radius:999px;background:var(--badge);border:1px solid #2a3142;color:#cbd5e1;font-size:12px}
+    .badge{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border-radius:6px;background:var(--badge);border:1px solid #2a3142;color:#cbd5e1;font-size:12px}
+    .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .msg{display:grid;grid-template-columns: 80px 1fr; gap:10px}
+    .msg .left{border-right:1px dashed #1e2432;padding-right:10px}
+    .msg .right{min-width:0}
+    .role{font-weight:600}
+    .muted{color:var(--muted)}
+    details{background:#0b0f17;border:1px solid #1f2635;border-radius:8px;padding:8px;margin-top:8px}
+    details pre{overflow:auto;max-height:240px;background:transparent;color:#d9e1f2}
+    .urls{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+    .url{font-size:12px;background:#0a1220;border:1px solid #22314d;padding:4px 6px;border-radius:6px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .tree{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12px; white-space:pre; background:#0b0f17;border:1px solid #1f2635;border-radius:8px;padding:8px;margin:12px}
+    .drop{border:1px dashed #334155;border-radius:10px;padding:12px;text-align:center;background:#0b0f17;color:#cbd5e1}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Chat Conversation Viewer</h1>
+    <div class="grow"></div>
+    <input id="fileInput" type="file" multiple accept="application/json" />
+    <button class="btn" id="loadSampleBtn" title="Loads a tiny mock so you can see the UI">Load sample</button>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="section">
+        <div id="drop" class="drop">Drop JSON files here<br/><span class="hint">Accepts single-convo JSON or arrays</span></div>
+      </div>
+      <div class="section">
+        <div class="row" style="margin-bottom:8px">
+          <input id="convSearch" type="search" placeholder="Filter conversations…" />
+          <span id="convCount" class="pill">0 convs</span>
+        </div>
+        <div id="convList"></div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="toolbar">
+        <input id="msgSearch" type="search" placeholder="Search messages, tools, urls…" />
+        <label class="row"><input id="toggleTools" type="checkbox" /> <span class="muted">Show only tool turns</span></label>
+        <label class="row"><input id="toggleTree" type="checkbox" /> <span class="muted">Show tree view</span></label>
+        <span id="msgCount" class="pill">0 msgs</span>
+        <div class="grow"></div>
+        <button class="btn" id="exportJsonl">Export SFT JSONL (current convo)</button>
+      </div>
+      <div id="treeView" class="tree" style="display:none"></div>
+      <div id="msgList"></div>
+    </main>
+  </div>
+</div>
+<script>
+(function(){
+  const state = {
+    conversations: [], // {id,title,create_time,update_time, nodes:[...]}
+    filteredConvIdxs: [],
+    activeConvIdx: -1,
+    filters: { convQuery: '', msgQuery: '', onlyTools: false, tree: false },
+  };
+
+  const els = {
+    fileInput: document.getElementById('fileInput'),
+    loadSampleBtn: document.getElementById('loadSampleBtn'),
+    convList: document.getElementById('convList'),
+    convSearch: document.getElementById('convSearch'),
+    convCount: document.getElementById('convCount'),
+    msgList: document.getElementById('msgList'),
+    msgSearch: document.getElementById('msgSearch'),
+    msgCount: document.getElementById('msgCount'),
+    toggleTools: document.getElementById('toggleTools'),
+    toggleTree: document.getElementById('toggleTree'),
+    treeView: document.getElementById('treeView'),
+    drop: document.getElementById('drop'),
+    exportJsonl: document.getElementById('exportJsonl'),
+  };
+
+  // Utils
+  const URL_RE = /https?:\/\/[^\s")]+/ig;
+  const fmt = {
+    iso(ts){ if(ts==null) return '—'; try{ return new Date(Number(ts)*1000).toISOString(); }catch(e){ return '—'; } },
+    x(s){ return (s==null?'':String(s)).replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); },
+    t(s,n=280){ s=s||''; s=s.replace(/\s+/g,' ').trim(); return s.length>n? s.slice(0,n-1)+'…': s; },
+  };
+  function badge(text){ return `<span class="badge">${fmt.x(text)}</span>` }
+
+  function extractUrls(obj, urls){
+    if(!obj) return;
+    if(typeof obj === 'string') {
+      const m = obj.match(URL_RE); if(m) m.forEach(u=>urls.add(u));
+    } else if(Array.isArray(obj)) {
+      obj.forEach(v=>extractUrls(v, urls));
+    } else if(typeof obj === 'object') {
+      Object.values(obj).forEach(v=>extractUrls(v, urls));
+    }
+  }
+
+  function extractAssets(parts){
+    const assets=[]; if(!Array.isArray(parts)) return assets;
+    for(const p of parts){
+      if(p && typeof p==='object'){
+        const ct=p.content_type;
+        if(ct && /_asset_pointer$/.test(ct)){
+          assets.push({content_type:ct, format:p.format, size_bytes:p.size_bytes, asset_pointer:p.asset_pointer});
+        }
+        if(ct==='real_time_user_audio_video_asset_pointer' && p.audio_asset_pointer && p.audio_asset_pointer.asset_pointer){
+          const ap=p.audio_asset_pointer; assets.push({content_type:'audio_asset_pointer', format:ap.format, size_bytes:ap.size_bytes, asset_pointer:ap.asset_pointer});
+        }
+      }
+    }
+    return assets;
+  }
+
+  function extractText(content){
+    const out=[]; const partTypes=[];
+    if(!content || typeof content!=='object') return {text:'', partTypes};
+    const ct=content.content_type; const parts=Array.isArray(content.parts)?content.parts:[];
+    if(['text','multimodal_text','tool_result','code','json','user_editable_context'].includes(ct)){
+      for(const p of parts){
+        if(p && typeof p==='object'){
+          const pt=p.content_type; partTypes.push(pt||'dict');
+          if('text' in p && p.text!=null){ out.push(String(p.text)); }
+        } else if(typeof p==='string'){ partTypes.push('str'); out.push(p); }
+      }
+    }
+    return {text:out.join('\n').trim(), partTypes};
+  }
+
+  function sortChildren(mapping, ids){
+    return ids.slice().sort((a,b)=>{
+      const ma=(mapping[a]?.message)||{}, mb=(mapping[b]?.message)||{};
+      const ta=Number(ma.create_time); const tb=Number(mb.create_time);
+      if(isFinite(ta) && isFinite(tb)) return ta - tb;
+      if(isFinite(ta)) return -1; if(isFinite(tb)) return 1; return a.localeCompare(b);
+    });
+  }
+
+  function traverseConversation(conv){
+    const mapping = conv.mapping || {};
+    const nodes=[]; const treeLines=[];
+    const roots = Object.keys(mapping).filter(id => mapping[id]?.parent==null);
+
+    function walk(id, depth){
+      const node = mapping[id]; if(!node) return;
+      const msg = node.message || {};
+      const author = msg.author || {};
+      const role = author.role || null;
+      const author_name = author.name || null;
+      const recipient = msg.recipient || null;
+      const content = msg.content || {};
+      const {text, partTypes} = extractText(content);
+      const assets = extractAssets(content.parts);
+      const urls = new Set(); extractUrls(node, urls);
+      const tool_call = (role==='assistant' && recipient && recipient!=='all');
+      const tool_result = (role==='tool');
+      const tool_name = tool_call ? recipient : (tool_result && author_name ? author_name : null);
+      const rec = {
+        node_id: id,
+        parent_id: node.parent || null,
+        depth,
+        role, author_name, recipient,
+        type: content.content_type || null,
+        part_types: partTypes,
+        text,
+        assets,
+        urls: Array.from(urls),
+        tool_call, tool_result, tool_name,
+        create_time: msg.create_time,
+        create_time_iso: fmt.iso(msg.create_time),
+        end_turn: msg.end_turn,
+        raw_content: content,
+        metadata: msg.metadata || {}
+      };
+      nodes.push(rec);
+      const label = tool_call ? `[assistant→${tool_name}] CALL ${fmt.t(text,100)}` : (tool_result ? `[${tool_name||'tool'}] RESULT ${fmt.t(text,100)}` : `[${role||'∅'}] ${fmt.t(text,100)}`);
+      treeLines.push(`${'  '.repeat(depth)}└─ ${label}`);
+      const children = sortChildren(mapping, node.children||[]);
+      children.forEach(cid => walk(cid, depth+1));
+    }
+
+    sortChildren(mapping, roots).forEach(r=>walk(r,0));
+    nodes.forEach((r,i)=>r.seq=i);
+    return { nodes, tree: treeLines.join('\n') };
+  }
+
+  function normalizeInput(obj){
+    // Accept a single conversation dict or an array of them
+    const convs = Array.isArray(obj) ? obj : [obj];
+    const out=[];
+    for(const c of convs){
+      const meta = {
+        id: c.conversation_id || c.id || Math.random().toString(36).slice(2),
+        title: c.title || '(untitled)',
+        create_time: c.create_time, update_time: c.update_time,
+      };
+      const {nodes, tree} = traverseConversation(c);
+      out.push({ ...meta, nodes, tree });
+    }
+    return out;
+  }
+
+  function renderConversations(){
+    const q = state.filters.convQuery.toLowerCase();
+    const list = state.conversations
+      .map((c, idx)=>({ idx, c }))
+      .filter(({c})=> c.title.toLowerCase().includes(q) || String(c.id).toLowerCase().includes(q));
+    state.filteredConvIdxs = list.map(x=>x.idx);
+    els.convCount.textContent = `${list.length} conv${list.length!==1?'s':''}`;
+    els.convList.innerHTML = list.map(({idx,c})=>{
+      const total = c.nodes.length;
+      const tools = c.nodes.filter(n=>n.tool_call||n.tool_result).length;
+      const users = c.nodes.filter(n=>n.role==='user').length;
+      const assistants = c.nodes.filter(n=>n.role==='assistant').length;
+      const active = idx === state.activeConvIdx ? 'active' : '';
+      return `<div class="conv ${active}" data-idx="${idx}">
+        <div class="title">${fmt.x(c.title)}</div>
+        <div class="meta">
+          <span>${badge(users+' user')}</span>
+          <span>${badge(assistants+' assistant')}</span>
+          <span>${badge(tools+' tools')}</span>
+          <span class="muted">${fmt.iso(c.create_time).slice(0,19)}</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function renderMessages(){
+    const idx = state.activeConvIdx;
+    if(idx<0){ els.msgList.innerHTML = '<div class="section muted">Load a JSON file to begin.</div>'; els.msgCount.textContent='0 msgs'; els.treeView.style.display='none'; return; }
+    const conv = state.conversations[idx];
+    const q = state.filters.msgQuery.toLowerCase();
+    const onlyTools = state.filters.onlyTools;
+    const rows = conv.nodes.filter(n=>{
+      if(onlyTools && !(n.tool_call||n.tool_result)) return false;
+      if(!q) return true;
+      const hay=[n.text, n.role, n.tool_name, n.recipient, n.urls.join(' ')].join(' ').toLowerCase();
+      return hay.includes(q);
+    });
+    els.msgCount.textContent = `${rows.length} msgs`;
+
+    if(state.filters.tree){
+      els.treeView.style.display='block';
+      els.treeView.textContent = conv.tree;
+    } else {
+      els.treeView.style.display='none';
+    }
+
+    els.msgList.innerHTML = rows.map(n=>{
+      const roleLabel = n.tool_call? `assistant → ${n.tool_name}` : (n.tool_result? `tool: ${n.tool_name}` : n.role||'∅');
+      const tags = [];
+      if(n.tool_call) tags.push('tool call');
+      if(n.tool_result) tags.push('tool result');
+      if(n.type) tags.push(n.type);
+      const urls = (n.urls||[]).map(u=>`<a class="url" href="${u}" target="_blank" rel="noreferrer noopener">${fmt.x(u)}</a>`).join('');
+      const assets = (n.assets||[]).map(a=>`<span class="pill">${fmt.x(a.content_type || 'asset')}</span>`).join(' ');
+      return `<div class="card msg">
+        <div class="left">
+          <div class="role">${fmt.x(roleLabel)}</div>
+          <div class="muted">#${n.seq}</div>
+          <div class="muted">${fmt.x(n.create_time_iso||'—')}</div>
+          <div class="row" style="margin-top:6px">${tags.map(t=>`<span class="pill">${fmt.x(t)}</span>`).join(' ')}</div>
+          ${assets? `<div class="row" style="margin-top:6px">${assets}</div>`: ''}
+        </div>
+        <div class="right">
+          ${n.text? `<div style="white-space:pre-wrap">${fmt.x(n.text)}</div>`: `<div class="muted">(no text)</div>`}
+          ${urls? `<div class="urls" title="URLs">${urls}</div>`:''}
+          <details>
+            <summary>Raw content</summary>
+            <pre>${fmt.x(JSON.stringify(n.raw_content, null, 2))}</pre>
+          </details>
+          ${Object.keys(n.metadata||{}).length? `<details><summary>Metadata</summary><pre>${fmt.x(JSON.stringify(n.metadata, null, 2))}</pre></details>`:''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function exportCurrentAsJSONL(){
+    const idx = state.activeConvIdx; if(idx<0) return;
+    const conv = state.conversations[idx];
+    // Simple SFT export: keep roles/tool traces as messages
+    const lines = [];
+    for(const n of conv.nodes){
+      const msgs = [];
+      if(n.tool_call){
+        msgs.push({ role:'assistant', tool_call: { name: n.tool_name||n.recipient||'tool', arguments: n.raw_content } });
+      } else if(n.tool_result){
+        msgs.push({ role:'tool', name: n.tool_name||'tool', content: n.raw_content });
+      } else if(['system','user','assistant'].includes(n.role)){
+        msgs.push({ role:n.role, content: n.text||'' });
+      }
+      if(msgs.length){ lines.push(JSON.stringify({ messages: msgs, meta:{ conv_id: state.conversations[idx].id, seq: n.seq } })); }
+    }
+    const blob = new Blob([lines.join('\n')+'\n'], {type:'application/jsonl'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = `sft_${safeFile(state.conversations[idx].title)}.jsonl`; a.click();
+  }
+  function safeFile(name){ return String(name||'conv').replace(/[^\w\-]+/g,'_').slice(0,80); }
+
+  // File handling
+  els.fileInput.addEventListener('change', async (e)=>{
+    const files = Array.from(e.target.files||[]);
+    await loadFiles(files);
+  });
+  ['dragenter','dragover'].forEach(evt=>{
+    els.drop.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); els.drop.style.borderColor = '#475569'; });
+  });
+  ['dragleave','drop'].forEach(evt=>{
+    els.drop.addEventListener(evt, e=>{ e.preventDefault(); e.stopPropagation(); els.drop.style.borderColor = '#334155'; });
+  });
+  els.drop.addEventListener('drop', async (e)=>{
+    const files = Array.from(e.dataTransfer?.files||[]).filter(f=>/\.json$/i.test(f.name));
+    await loadFiles(files);
+  });
+
+  async function loadFiles(files){
+    if(!files.length) return;
+    for(const f of files){
+      try{
+        const text = await f.text();
+        const obj = JSON.parse(text);
+        const convs = normalizeInput(obj);
+        state.conversations.push(...convs);
+      }catch(err){
+        alert(`Failed to parse ${f.name}: ${err}`);
+      }
+    }
+    if(state.activeConvIdx<0 && state.conversations.length>0){ state.activeConvIdx = 0; }
+    renderConversations();
+    renderMessages();
+  }
+
+  // Filters & actions
+  els.convSearch.addEventListener('input', ()=>{ state.filters.convQuery = els.convSearch.value; renderConversations(); });
+  els.msgSearch.addEventListener('input', ()=>{ state.filters.msgQuery = els.msgSearch.value; renderMessages(); });
+  els.toggleTools.addEventListener('change', ()=>{ state.filters.onlyTools = !!els.toggleTools.checked; renderMessages(); });
+  els.toggleTree.addEventListener('change', ()=>{ state.filters.tree = !!els.toggleTree.checked; renderMessages(); });
+  els.exportJsonl.addEventListener('click', exportCurrentAsJSONL);
+
+  els.convList.addEventListener('click', (e)=>{
+    const card = e.target.closest('.conv'); if(!card) return;
+    state.activeConvIdx = Number(card.dataset.idx);
+    renderConversations();
+    renderMessages();
+  });
+
+  // Sample (tiny synthetic)
+  els.loadSampleBtn.addEventListener('click', ()=>{
+    const sample = {
+      title:"Training classifiers with BERT (sample)",
+      create_time: 1753476833.044323,
+      update_time: 1753481312.870341,
+      mapping: {
+        root:{id:'root', parent:null, children:['a1'], message:null},
+        a1:{id:'a1', parent:'root', children:['b1'], message:{author:{role:'user'}, create_time:1753476832.82, content:{content_type:'multimodal_text', parts:[{content_type:'audio_transcription', text:'So I want to start training classifiers with BERT.'}]}}},
+        b1:{id:'b1', parent:'a1', children:['a2'], message:{author:{role:'assistant'}, create_time:1753476833.28, end_turn:true, content:{content_type:'multimodal_text', parts:[{content_type:'audio_transcription', text:'BERT is a solid choice. Happy to help with steps!'}]}}},
+        a2:{id:'a2', parent:'b1', children:['t1'], message:{author:{role:'assistant'}, recipient:'web', create_time:1753476834.00, content:{content_type:'json', parts:[{content_type:'json', text:'{"search_query":[{"q":"BERT tutorial"}]}' }]}}},
+        t1:{id:'t1', parent:'a2', children:[], message:{author:{role:'tool', name:'web'}, create_time:1753476835.00, content:{content_type:'tool_result', parts:[{content_type:'json', text:'{"results":[{"title":"BERT paper","url":"https://arxiv.org/abs/1810.04805"}]}' }]}}}
+      }
+    };
+    state.conversations.push(...normalizeInput(sample));
+    if(state.activeConvIdx<0) state.activeConvIdx=0;
+    renderConversations(); renderMessages();
+  });
+
+  // Initial render
+  renderConversations();
+  renderMessages();
+})();
+</script>
+</body>
+</html>
