@@ -32,4 +32,13 @@ Raise or lower --batch as long as it exceeds your longest prompt tokens.
 
 ---
 
+## Code snippet indexing
+
+`index_code_snippets.py` parses chat transcripts and clusters the fenced code
+blocks it finds.  The prototype relies on simple ````` fences, which makes it
+easy to miss stray code.  Future revisions can plug in a parser such as
+``tree-sitter`` or train a classifier to label lines as code or prose so that
+snippets without fences are still discovered.  Both approaches offer more
+resilience than searching for backticks alone.
+
 happy clustering!
