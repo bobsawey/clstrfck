@@ -1,6 +1,10 @@
 # clstrfck
 
-Utilities and experiments for clustering chat conversations.
+An experimental monorepo for random data mining, information retrieval,
+research, data analysis, and whatever else seems useful. It's a public
+scratch space for dumping thoughts, tools, and datasets. Nothing here is
+rigorously tested or validated, but the collection evolves week to week and
+gradually becomes more useful, even if it's not particularly novel.
 
 ## Embedding and clustering
 
