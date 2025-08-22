@@ -28,6 +28,16 @@ The `tools/` directory hosts miscellaneous helpers:
 - **Chat Conversation Viewer:** `chat_conversation_viewer_single_page_tool.html` with documentation in `readme_chat_conversation_viewer_single_page_tool.md`. Open the HTML file in a browser to inspect ChatGPT conversation exports and optionally export SFT‑style JSONL.
 - **RLHF data generator:** `generate_rlhf.py` parses conversation dumps and emits SFT segments, DPO pairs, and tool‑usage logs.
 
+## Atzmo
+
+Automation experiments live in `atzmo/`. The initial script `grid_overlay.py`
+resizes an image to 960×960, overlays a 16×16 grid, and labels each cell with
+its coordinates to help a VLM pinpoint UI elements. A `browser_container`
+folder holds a Playwright-powered Docker environment that launches a Chromium
+browser for scripted mouse, keyboard, and touch demos. The
+`macos_system_poc.py` script is a warning-laden proof of concept for
+system-wide control on macOS.
+
 ## Reference material
 
 Reference documents intended for future data‑mining live in `docs/reference/`.
