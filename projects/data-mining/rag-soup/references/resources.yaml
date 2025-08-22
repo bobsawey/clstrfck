@@ -1,0 +1,179 @@
+# Structured catalog of references. Extend freely.
+# Fields:
+# - id: short stable handle
+# - title, authors, year, venue, type
+# - url: canonical/landing page
+# - tags: taxonomy labels (see TAXONOMY.md)
+# - notes: 1-2 lines on why it's useful
+
+items:
+  - id: dpr2020
+    title: "Dense Passage Retrieval for Open-Domain Question Answering"
+    authors: ["Vlad Karpukhin","Barlas Oguz","Sewon Min","Patrick Lewis","Ledell Wu","Sergey Edunov","Danqi Chen","Wen-tau Yih"]
+    year: 2020
+    venue: "EMNLP"
+    type: paper
+    url: "https://arxiv.org/abs/2004.04906"
+    tags: [retrieval, dense]
+    notes: "Dual-encoder baseline for dense retrieval; in-batch negatives; widely reproduced."
+
+  - id: colbert2020
+    title: "ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT"
+    authors: ["Omar Khattab","Matei Zaharia"]
+    year: 2020
+    venue: "SIGIR"
+    type: paper
+    url: "https://arxiv.org/abs/2004.12832"
+    tags: [retrieval, late-interaction, reranking]
+    notes: "Late interaction: token-level max-sim aggregation. Strong recall, good precision when reranking."
+
+  - id: bm25_manning_book
+    title: "Introduction to Information Retrieval"
+    authors: ["Christopher D. Manning","Prabhakar Raghavan","Hinrich Schütze"]
+    year: 2008
+    venue: "Cambridge University Press"
+    type: book
+    url: "https://nlp.stanford.edu/IR-book/"
+    tags: [foundations, retrieval, sparse, evaluation]
+    notes: "Canonical IR text. BM25, Rocchio, PRF, evaluation metrics."
+
+  - id: beir2021
+    title: "BEIR: A Heterogeneous Benchmark for Information Retrieval"
+    authors: ["Nandan Thakur","Nils Reimers","Johannes Daxenberger","Yoav Peleg","Iryna Gurevych"]
+    year: 2021
+    venue: "NeurIPS Datasets and Benchmarks"
+    type: paper
+    url: "https://arxiv.org/abs/2104.08663"
+    tags: [evaluation, retrieval]
+    notes: "Zero-shot retrieval benchmark across diverse tasks; great for method sanity checks."
+
+  - id: msmarco2016
+    title: "MS MARCO: A Human Generated Machine Reading Comprehension Dataset"
+    authors: ["Tri Nguyen","Mir Rosenberg","Xia Song","Jianfeng Gao","S. Tiwary","R. Majumder","Li Deng"]
+    year: 2016
+    venue: "arXiv"
+    type: paper
+    url: "https://arxiv.org/abs/1611.09268"
+    tags: [evaluation]
+    notes: "Large-scale QA and passage ranking corpus; used for reranking and retrieval."
+
+  - id: rrf2009
+    title: "Reciprocal Rank Fusion Outperforms Condorcet and Individual Rank Learning Methods"
+    authors: ["Gordon V. Cormack","Charles L. A. Clarke","Stefan Buettcher"]
+    year: 2009
+    venue: "SIGIR"
+    type: paper
+    url: "https://doi.org/10.1145/1571941.1572114"
+    tags: [fusion]
+    notes: "Simple, robust rank fusion: sum 1/(k+rank). Default for hybrid dense+sparse."
+
+  - id: foxshaw1994
+    title: "Combination of Multiple Searches"
+    authors: ["Edward A. Fox","Joseph A. Shaw"]
+    year: 1994
+    venue: "TREC-2"
+    type: paper
+    url: "https://trec.nist.gov/pubs/trec2/papers/uva.ps.gz"
+    tags: [fusion]
+    notes: "Classic score-based fusion (CombSUM/CombMNZ) and normalization ideas."
+
+  - id: rocchio1971
+    title: "Relevance Feedback in Information Retrieval"
+    authors: ["J. J. Rocchio"]
+    year: 1971
+    venue: "The SMART Retrieval System"
+    type: chapter
+    url: "http://www.dtic.mil/dtic/tr/fulltext/u2/702390.pdf"
+    tags: [expansion]
+    notes: "Foundational relevance feedback (query vector moves toward relevant, away from non-relevant)."
+
+  - id: rm3_2001
+    title: "Relevance-Based Language Models"
+    authors: ["Victor Lavrenko","W. Bruce Croft"]
+    year: 2001
+    venue: "SIGIR"
+    type: paper
+    url: "https://dl.acm.org/doi/10.1145/383952.384019"
+    tags: [expansion]
+    notes: "PRF via relevance models; RM3 variant widely used (e.g., Anserini)."
+
+  - id: doc2query2019
+    title: "Document Expansion by Query Prediction"
+    authors: ["Rodrigo Nogueira","Zhiying Jiang","Jimmy Lin"]
+    year: 2019
+    venue: "arXiv"
+    type: paper
+    url: "https://arxiv.org/abs/1904.08375"
+    tags: [expansion]
+    notes: "Predict queries for each document to improve sparse retrieval."
+
+  - id: mmr1998
+    title: "The Use of MMR, Diversity-Based Reranking for Reordering Documents and Producing Summaries"
+    authors: ["Jaime Carbonell","Jade Goldstein"]
+    year: 1998
+    venue: "SIGIR"
+    type: paper
+    url: "https://dl.acm.org/doi/10.1145/290941.291025"
+    tags: [diversification, reranking]
+    notes: "Balances relevance and novelty; staple for redundancy control."
+
+  - id: react2022
+    title: "ReAct: Synergizing Reasoning and Acting in Language Models"
+    authors: ["Shunyu Yao","Jeffrey Zhao","Dian Yu","Nan Du","Izhak Shafran","Karthik Narasimhan","Yiming Yang"]
+    year: 2022
+    venue: "arXiv"
+    type: paper
+    url: "https://arxiv.org/abs/2210.03629"
+    tags: [agentic-rag]
+    notes: "Reason + act traces for tool-using agents; applies to multi-step retrieval."
+
+  - id: azure_rrf_hybrid
+    title: "Hybrid Search and Ranking Fusion in Azure AI Search"
+    authors: ["Microsoft Docs"]
+    year: 2024
+    venue: "documentation"
+    type: docs
+    url: "https://learn.microsoft.com/azure/search/hybrid-search-ranking-fusion"
+    tags: [production, fusion]
+    notes: "Practical RRF-based fusion for BM25 + vectors; production levers & examples."
+
+  - id: azure_semantic_ranker
+    title: "Semantic Reranking in Azure AI Search"
+    authors: ["Microsoft Docs"]
+    year: 2024
+    venue: "documentation"
+    type: docs
+    url: "https://learn.microsoft.com/azure/search/semantic-search-overview"
+    tags: [production, reranking]
+    notes: "Cross-encoder style reranker guidance, limits, and configuration."
+
+  - id: bge_reranker
+    title: "BGE Reranker (FlagEmbedding)"
+    authors: ["BAAI"]
+    year: 2023
+    venue: "GitHub"
+    type: code
+    url: "https://github.com/FlagOpen/FlagEmbedding"
+    tags: [reranking]
+    notes: "Practical reranker family with multilingual coverage; easy to self-host."
+
+  - id: cohere_rerank
+    title: "Cohere Rerank API"
+    authors: ["Cohere"]
+    year: 2023
+    venue: "docs"
+    type: docs
+    url: "https://docs.cohere.com/docs/rerank"
+    tags: [reranking, production]
+    notes: "Hosted cross-encoder reranking; inputs/limits/score semantics."
+
+  - id: e5_2022
+    title: "Text Embeddings by Weakly-Supervised Contrastive Learning"
+    authors: ["Xiao Wang","Yuxin Wang","Yifan Hou","Yuzhong Zhang","Shizhe Diao","Tianyu Gao","Zhiyuan Liu","Tat-Seng Chua"]
+    year: 2022
+    venue: "arXiv"
+    type: paper
+    url: "https://arxiv.org/abs/2212.03533"
+    tags: [retrieval, dense]
+    notes: "E5 embeddings; strong zero-shot retrieval baseline; multilingual variants exist."
+

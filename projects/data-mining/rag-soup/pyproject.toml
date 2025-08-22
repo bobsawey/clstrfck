@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rag-soup"
+version = "0.1.0"
+description = "Dual-zone data mining pipeline with safety routing and catalogs for downstream RAG."
+authors = [{name="clstrfck"}]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "pandas>=2.2",
+  "pyarrow>=16.0",
+  "chardet>=5.2",
+  "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "black>=24.0",
+]
+
+[project.scripts]
+rag-mine = "rag_soup.mine_dump:main"
+
+[tool.black]
+line-length = 100
+
+[tool.setuptools.package-dir]
+"" = "src"

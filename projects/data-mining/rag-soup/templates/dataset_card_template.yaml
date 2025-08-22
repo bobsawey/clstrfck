@@ -1,0 +1,12 @@
+id: your_dataset_id
+source: ...
+scope: personal|work|mixed
+license_summary: ...
+pii: none|low|medium|high
+nsfw: none|present
+toxic: none|sporadic|present
+provenance_notes: ...
+routing: silver_normalized|red_quarantine
+retention:
+  review_by: 2026-01-01
+intended_use: [discovery, filter_training, research]

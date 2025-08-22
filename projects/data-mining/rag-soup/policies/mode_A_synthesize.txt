@@ -1,0 +1,5 @@
+POLICY: SYNTHESIZE
+RULES:
+- Integrate facts from multiple sources; prefer primary + recent.
+- Each non-obvious sentence ends with a citation.
+- Include version/date numbers explicitly.

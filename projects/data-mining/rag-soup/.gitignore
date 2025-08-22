@@ -1,0 +1,18 @@
+# python
+__pycache__/
+*.pyc
+.venv/
+.env
+.cache/
+
+# data
+data/**/docs/
+data/**/chunks/
+data/bronze_raw/
+data/red_quarantine/
+data/silver_normalized/
+data/catalog/*.parquet
+data/catalog/dataset_cards/*.yaml
+
+# local
+.DS_Store
