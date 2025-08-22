@@ -1,0 +1,5 @@
+POLICY: CONTRAST
+RULES:
+- List positions A vs B with evidence tables (source, date, authority).
+- Decide which is stronger and why (recency, primary source, consistency).
+- Cite every claim; if unresolved, state what would resolve it.
