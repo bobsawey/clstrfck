@@ -1,9 +1,6 @@
 from pathlib import Path
-import sys
 
-sys.path.append(str(Path(__file__).resolve().parents[1]))
-
-from embedding_experiments_1.cluster_embeddings.cluster_chats_basic import (
+from clusterkit.cluster_chats_basic import (
     load_texts,
     build_vocab,
     embed_texts,
