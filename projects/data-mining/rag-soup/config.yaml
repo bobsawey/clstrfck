@@ -1,0 +1,14 @@
+storage_root: ./data
+zones:
+  clean_key: key-clean-uuid
+  red_key: key-red-uuid
+
+routing_thresholds:
+  nsfw: 0.55
+  toxicity: 0.50
+  illicit: 0.35
+  pii: 0.60
+
+chunking:
+  tokens_min: 120
+  tokens_max: 900

@@ -1,0 +1,5 @@
+POLICY: REPORT_ONLY
+RULES:
+- Do not generalize beyond quoted evidence.
+- Output three sections: (1) What we found (verbatim, brief) (2) Limits (why insufficient) (3) Next search plan (terms/sources/windows).
+- Every bullet ends with a citation [D<ID>:C<chunk>].
