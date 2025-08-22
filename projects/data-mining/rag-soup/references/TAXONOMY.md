@@ -1,0 +1,28 @@
+# Reference Taxonomy
+
+- retrieval
+  - sparse (bm25, lexical, analyzers)
+  - dense (dual-encoder, e.g., DPR/E5/GTE)
+  - late-interaction (e.g., ColBERT)
+- reranking
+  - cross-encoders (monoBERT/monoT5/BGE-reranker)
+  - late-interaction rerank
+- fusion
+  - rank-based (RRF)
+  - score-based (z-score, CombSUM/CombMNZ)
+- expansion
+  - relevance feedback (Rocchio)
+  - pseudo-relevance feedback (RM3)
+  - doc expansion (doc2query)
+- diversification
+  - MMR
+- evaluation
+  - BEIR, MS MARCO, nDCG/MAP/MRR
+- agentic RAG
+  - ReAct, Self-RAG (retrieve/generate/critique loops)
+- foundations
+  - core IR textbooks & surveys
+- production
+  - Azure AI Search hybrid & RRF, semantic ranker
+- security
+  - prompt/context injection defenses (delimiting, provenance)
