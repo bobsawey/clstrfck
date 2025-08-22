@@ -1,9 +1,6 @@
 from pathlib import Path
-import sys
 
-sys.path.append(str(Path(__file__).resolve().parents[1]))
-
-from embedding_experiments_1.cluster_embeddings.index_code_snippets import (
+from clusterkit.index_code_snippets import (
     load_messages,
     extract_code_spans,
     cluster_code_spans,

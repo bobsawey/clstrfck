@@ -1,55 +1,30 @@
 # clstrfck
 
-An experimental monorepo for random data mining, information retrieval,
-research, data analysis, and whatever else seems useful. It's a public
-scratch space for dumping thoughts, tools, and datasets. Nothing here is
-rigorously tested or validated, but the collection evolves week to week and
-gradually becomes more useful, even if it's not particularly novel.
+A public scratch space for data mining and automation experiments.
 
-## Embedding and clustering
+## Layout
 
-The `embedding_experiments_1/cluster_embeddings/` package contains two scripts:
+- `apps/` – runnable command line tools
+- `libs/` – reusable libraries
+- `experiments/` – throwaway notebooks and spikes
+- `docs/` – reference material and architecture notes
+- `tests/` – mirrors `apps/` and `libs/` package structure
+- `data/` – placeholder for raw and processed datasets (ignored)
 
-- `cluster_chats.py` — embed user/assistant turns with a GGUF embedding model served by `llama-cpp-python` and cluster vectors using scikit-learn K‑Means. It can sweep a range of cluster counts with silhouette scoring and optionally save embeddings.
-
-  ```sh
-  python embedding_experiments_1/cluster_embeddings/cluster_chats.py \
-    --jsonl conversation_turns.jsonl \
-    --model /path/to/bge-base-en-v1.5.Q4_K_M.gguf \
-    --best-k --verbose
-  ```
-
-- `cluster_chats_basic.py` — a tiny, pure‑Python pipeline that builds a bag‑of‑words vocabulary, creates term‑frequency vectors, and groups them with a lightweight K‑Means. Designed for quick experiments without heavy dependencies.
-
-## Tools
-
-The `tools/` directory hosts miscellaneous helpers:
-
-- **Chat Conversation Viewer:** `chat_conversation_viewer_single_page_tool.html` with documentation in `readme_chat_conversation_viewer_single_page_tool.md`. Open the HTML file in a browser to inspect ChatGPT conversation exports and optionally export SFT‑style JSONL.
-- **RLHF data generator:** `generate_rlhf.py` parses conversation dumps and emits SFT segments, DPO pairs, and tool‑usage logs.
-
-## Atzmo
-
-Automation experiments live in `atzmo/`. The initial script `grid_overlay.py`
-resizes an image to 960×960, overlays a 16×16 grid, and labels each cell with
-its coordinates to help a VLM pinpoint UI elements. A `browser_container`
-folder holds a Playwright-powered Docker environment that launches a Chromium
-browser for scripted mouse, keyboard, and touch demos. The
-`macos_system_poc.py` script is a warning-laden proof of concept for
-system-wide control on macOS.
-
-## Reference material
-
-Reference documents intended for future data‑mining live in `docs/reference/`.
-
-## Tests
-
-A small pytest suite covers the pure‑Python clustering helpers.
+## Getting Started
 
 ```sh
-pytest
+pip install -e libs/clusterkit
+pip install -e libs/atzmo
+pip install -e apps/rag-soup
+```
+
+Run tests with:
+
+```sh
+pytest -q
 ```
 
 ## License
 
-Apache 2.0 — see [LICENSE](LICENSE).
+Apache 2.0 – see [LICENSE](LICENSE).
