@@ -1,0 +1,56 @@
+paths:
+  input_dirs:
+    - "/abs/path/to/your/text"
+  object_store: "data/objects"
+  processed_dir: "data/processed"
+  logs_dir: "data/logs"
+
+ingest:
+  include_globs: ["**/*.txt","**/*.md","**/*.pdf","**/*.html","**/*.eml","**/*.json"]
+  exclude_globs: ["**/.git/**","**/node_modules/**"]
+  cdc:
+    enabled: false
+    avg_size_kb: 128
+
+extract:
+  html:
+    strip_boilerplate: true
+  pdf:
+    strategy: "auto"
+  email:
+    keep_headers: true
+
+normalize:
+  recipe_v: "v1"
+  unicode_nf: "NFKC"
+  lower: false
+  collapse_whitespace: true
+  strip_boilerplate: true
+
+dedupe:
+  exact_hash: "blake3"
+  near_dup:
+    simhash_bits: 64
+    minhash_bands: 32
+    minhash_rows: 4
+    threshold: 0.88
+
+chunk:
+  target_tokens: 800
+  overlap_tokens: 200
+  splitter: "semantic"
+  max_chars: 8000
+
+embed:
+  model: "bge-small"
+  dtype: "fp16"
+  batch_size: 128
+
+entities:
+  enabled: false
+  model: "spacy/en_core_web_trf"
+
+neo4j:
+  uri: "bolt://localhost:7687"
+  user: "neo4j"
+  password: "test"
