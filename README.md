@@ -7,7 +7,7 @@ A public scratch space for data mining and automation experiments.
 - `apps/` – runnable command line tools
 - `libs/` – reusable libraries
 - `experiments/` – throwaway notebooks and spikes
-- `docs/` – reference material and architecture notes
+- `docs/` – reference material and architecture notes (see [docs/mining-prep.md](docs/mining-prep.md) for the mining pipeline)
 - `tests/` – mirrors `apps/` and `libs/` package structure
 - `data/` – placeholder for raw and processed datasets (ignored)
 
