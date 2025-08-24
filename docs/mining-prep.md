@@ -320,7 +320,3 @@ What’s “pluggable”
 •Entity/Topic engines
 
 All components are hidden behind tiny interfaces so you can swap them later without touching the graph/query surface.
-
----
-
-If you want, I can also drop in minimal Python stubs for each step (typer CLIs + IO helpers) so Codex can expand them into fully working scripts.
