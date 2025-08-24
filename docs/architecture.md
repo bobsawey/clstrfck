@@ -115,6 +115,3 @@ CREATE INDEX idx_chunk_embed IF NOT EXISTS FOR (c:Chunk) ON (c.embedding)
 CALL db.index.fulltext.createNodeIndex('idx_chunk_fulltext',['Chunk'],['text','title']);
 ```
 
-*If you want this as an image diagram, let me know and I’ll generate one for you!*
-
-
