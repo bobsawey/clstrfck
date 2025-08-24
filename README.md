@@ -1,5 +1,6 @@
 # clstrfck
 
+**testing codex cli**
 A public scratch space for data mining and automation experiments.
 
 ## Layout
