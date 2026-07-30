@@ -122,7 +122,38 @@ python3 pipeline.py --work-dir work catalog --rebuild   # drop + re-derive
   and `--rebuild` is the pare-down path — drops the wide table (stale
   attr columns with it) and re-derives from current data.
 
-## 5. Known gaps to be aware of
+## 5. PII / secrets audit (including running the pipeline on this repo)
+
+Two complementary layers, per the repo philosophy (deterministic first,
+LLM for the semantic remainder):
+
+- **Deterministic:** `detect-secrets` runs as a pre-commit hook against
+  `.secrets.baseline` at the repo root (regenerate with
+  `detect-secrets scan > .secrets.baseline`, audit with
+  `detect-secrets audit .secrets.baseline`). It catches keyword/entropy
+  secrets, not contextual PII like names or LAN hostnames.
+- **Semantic:** the extraction schema includes a `pii` class
+  (person names, emails, phones, credentials, private host addresses),
+  each hit grounded to an exact span. To audit this repo with itself:
+
+```bash
+python3 pipeline.py --work-dir work snapshot ../..
+python3 pipeline.py --work-dir work index ../..
+python3 pipeline.py --work-dir work normalize
+python3 pipeline.py --work-dir work extract \
+    --model-id <model> --model-url http://<local-llm-host>:1234/v1
+python3 pipeline.py --work-dir work catalog
+sqlite3 -header -column work/catalog.sqlite \
+  "SELECT source_path, extraction_text, attr_kind, attr_placeholder \
+   FROM artifact_wide WHERE extraction_class='pii' AND grounded=1"
+```
+
+Treat model output as a lead-generator, not a verdict: the grounded spans
+tell you exactly where to look, `ungrounded.jsonl` holds what it asserted
+but couldn't be verified, and `attr_placeholder='true'` filters the
+example.com noise.
+
+## 6. Known gaps to be aware of
 
 - **OCR never ran against a real scanned doc here** (no tessdata in the
   sandbox). First time you feed it scanned PDFs/images, expect to install

@@ -3,8 +3,8 @@
 A provenance-preserving document extraction pipeline: snapshot a source
 directory, deterministically index every file, normalize documents to UTF-8
 text/Markdown, run LLM extraction (LangExtract) to produce semantic artifacts
-(decision, task, claim, question, reference), and ground every artifact to an
-exact character span traceable back to the original file bytes.
+(decision, task, claim, question, reference, pii), and ground every artifact
+to an exact character span traceable back to the original file bytes.
 
 Core principle: the LLM makes bounded semantic decisions; deterministic code
 owns all paths, hashes, IDs, offsets, and provenance. Model output that can't

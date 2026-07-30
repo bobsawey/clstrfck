@@ -15,7 +15,7 @@ from dataclasses import dataclass
 from typing import Protocol
 
 PROMPT_DESCRIPTION = """
-Extract five kinds of load-bearing statements from the text, using the
+Extract six kinds of load-bearing statements from the text, using the
 exact wording found in the source for each extraction (do not paraphrase):
 
 - decision: a choice that was made or settled on
@@ -23,6 +23,12 @@ exact wording found in the source for each extraction (do not paraphrase):
 - claim: a falsifiable assertion about how something is or behaves
 - question: an open question that has not been answered in the text
 - reference: a citation, URL, or pointer to another document
+- pii: personally identifying or sensitive data -- a person's name,
+  email address, phone number, physical address, credential, password,
+  API key or token, or a network/host address that identifies private
+  infrastructure. Obvious placeholders (example.com, localhost,
+  <angle-bracket templates>) are still pii; mark them with
+  placeholder=true so reviewers can filter them.
 
 Extract entities in the order they appear. Use exact text from the
 document for extraction_text -- do not paraphrase or merge separate
@@ -105,6 +111,44 @@ def build_examples():
                     "reference",
                     "https://github.com/BLAKE3-team/BLAKE3",
                     {"kind": "url"},
+                ),
+            ],
+        ),
+        _example(
+            "Ping Jane Doe at jane.doe@example.com or +1 (555) 010-4477 "
+            "before the deploy. The staging box is at 10.7.3.12 and the "
+            "grafana password is still hunter2.",
+            [
+                (
+                    "task",
+                    "Ping Jane Doe at jane.doe@example.com or "
+                    "+1 (555) 010-4477 before the deploy",
+                    {"status": "open", "deadline_text": "before the deploy"},
+                ),
+                (
+                    "pii",
+                    "Jane Doe",
+                    {"kind": "person_name", "placeholder": "false"},
+                ),
+                (
+                    "pii",
+                    "jane.doe@example.com",
+                    {"kind": "email", "placeholder": "true"},
+                ),
+                (
+                    "pii",
+                    "+1 (555) 010-4477",
+                    {"kind": "phone", "placeholder": "false"},
+                ),
+                (
+                    "pii",
+                    "10.7.3.12",
+                    {"kind": "host_address", "placeholder": "false"},
+                ),
+                (
+                    "pii",
+                    "hunter2",
+                    {"kind": "credential", "placeholder": "false"},
                 ),
             ],
         ),
