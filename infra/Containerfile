@@ -1,0 +1,29 @@
+# Image for apps/extraction-pipeline. The build context is that directory;
+# build it through the Makefile next to this file:  make -C infra image
+#
+# The same image serves both roles: one-off runs under Apple `container` or
+# Kata, and the base of the persistent Apple container machine (where the
+# code comes from the host home mount instead of /app).
+FROM python:3.12-slim-bookworm
+
+# rsync: stage 0 snapshot shells out to `rsync -aAX`.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends rsync \
+ && rm -rf /var/lib/apt/lists/*
+
+ENV VIRTUAL_ENV=/opt/venv \
+    PATH=/opt/venv/bin:$PATH \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+COPY requirements.txt /tmp/requirements.txt
+RUN python -m venv /opt/venv \
+ && pip install --no-cache-dir -r /tmp/requirements.txt
+
+WORKDIR /app
+COPY excludes.txt pipeline.py ./
+COPY pipeline_lib/ pipeline_lib/
+COPY tests/ tests/
+COPY test_docs/ test_docs/
+
+CMD ["python", "pipeline.py", "--help"]

@@ -25,6 +25,9 @@ kept as reference.
   - `rag-soup/`, `rlhf-maker/`, `chat-conversation-viewer/`, `repo-sweep/`,
     `xcode-cli-tools-installer/` – smaller tools and experiments
 - `libs/` – reusable libraries (`clusterkit`, `atzmo`)
+- `infra/` – Containerfile + Makefile for running the pipeline under Apple
+  `container` (incl. a persistent container machine), Kata, any OCI engine,
+  or a plain venv
 - `experiments/` – throwaway notebooks and spikes
 - `docs/` – reference material and architecture notes
 - `tests/` – mirrors `apps/` and `libs/` package structure
