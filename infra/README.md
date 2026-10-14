@@ -1,8 +1,8 @@
 # infra
 
 Local setup for `apps/extraction-pipeline`, for whichever host runs it.
-One `Containerfile` builds the image, and one `Makefile` drives it per
-runtime.
+One `Containerfile` builds a Fedora-based image, and one `Makefile` drives
+it per runtime.
 
 | `RUNTIME` | Host | What runs it |
 |---|---|---|
@@ -55,7 +55,8 @@ make -C infra machine-rm      # start over
 Nothing here has run on a real Apple machine or Kata host yet. Likely
 first snags:
 
-- Whether `container machine create` accepts this image as-is. Machines
-  boot the image's init system, and `python:*-slim` ships none.
+- Whether `container machine create` boots this image as-is. It's Fedora 44
+  with systemd, sudo and shadow-utils installed for that purpose, but no
+  machine has booted it yet.
 - rsync `-aAX` into a bind mount (ACLs and xattrs over virtiofs).
 - File ownership in `WORK` when written from inside the VM.

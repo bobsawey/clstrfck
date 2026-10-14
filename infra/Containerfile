@@ -4,12 +4,15 @@
 # The same image serves both roles: one-off runs under Apple `container` or
 # Kata, and the base of the persistent Apple container machine (where the
 # code comes from the host home mount instead of /app).
-FROM python:3.12-slim-bookworm
+FROM registry.fedoraproject.org/fedora:44
 
+# python3.12: the interpreter the pinned wheels were checked against.
 # rsync: stage 0 snapshot shells out to `rsync -aAX`.
-RUN apt-get update \
- && apt-get install -y --no-install-recommends rsync \
- && rm -rf /var/lib/apt/lists/*
+# systemd, sudo, shadow-utils: so the image can boot as an Apple container
+# machine (init system, host-user creation, passwordless sudo).
+RUN dnf -y install --setopt=install_weak_deps=False \
+        python3.12 rsync systemd sudo shadow-utils \
+ && dnf clean all
 
 ENV VIRTUAL_ENV=/opt/venv \
     PATH=/opt/venv/bin:$PATH \
@@ -17,7 +20,7 @@ ENV VIRTUAL_ENV=/opt/venv \
     PYTHONUNBUFFERED=1
 
 COPY requirements.txt /tmp/requirements.txt
-RUN python -m venv /opt/venv \
+RUN python3.12 -m venv /opt/venv \
  && pip install --no-cache-dir -r /tmp/requirements.txt
 
 WORKDIR /app
