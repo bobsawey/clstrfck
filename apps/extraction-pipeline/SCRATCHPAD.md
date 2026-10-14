@@ -271,3 +271,14 @@ Live-model notes from today (comparison-run thread, partial):
   something with no obvious column for it (text encoding/confidence, OCR
   retry attempts), it goes to a JSONL log under `work/logs/` instead of
   bending the schema.
+
+### Update 2026-10-14: `xberg==0.1.0` is gone from PyPI
+
+The pinned alias package no longer exists (PyPI 404s on the release; the
+`xberg` name now ships an unrelated 1.x API with no `extract_file_sync`),
+so a fresh `pip install -r requirements.txt` failed everywhere. Swapped
+the pin to `kreuzberg==4.10.2` -- the exact engine version the alias
+wrapped and that runs recorded as `xberg_version` -- and changed the four
+`import xberg` sites to `import kreuzberg as xberg`. The recorded runtime
+version string is unchanged ("4.10.2"), so existing work dirs keep
+skipping completed work. All 33 tests pass against it.

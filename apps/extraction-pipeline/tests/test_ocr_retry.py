@@ -13,7 +13,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
-import xberg
+import kreuzberg as xberg
 
 from pipeline_lib import db, ids, normalize
 from pipeline_lib.paths import WorkPaths

@@ -19,7 +19,7 @@ SCOPE_OUT_OF_SCOPE = "out_of_scope"
 def detect_mime_type(path: Path) -> tuple[str | None, str]:
     """Returns (mime_type, detector_name). Xberg first, mimetypes fallback."""
     try:
-        import xberg
+        import kreuzberg as xberg
 
         mime = xberg.detect_mime_type_from_path(str(path))
         if mime:

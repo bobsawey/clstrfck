@@ -2,7 +2,7 @@ blake3==1.0.9
 charset-normalizer==3.4.9
 langextract==1.6.0
 openai==2.46.0  # langextract's OpenAI provider (OpenAI-compatible local servers)
-xberg==0.1.0
+kreuzberg==4.10.2  # the engine behind the old `xberg` alias (0.1.0, since removed from PyPI); imported as `xberg`
 
 # test/fixture-generation only
 pytest==9.1.1

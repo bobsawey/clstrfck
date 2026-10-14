@@ -151,7 +151,7 @@ def normalize_document_source(
     stats: NormalizeStats,
 ) -> str:
     """Returns a one-line outcome description for progress logging."""
-    import xberg
+    import kreuzberg as xberg
 
     source_id = source_row["source_id"]
     relative_path = source_row["relative_path"]

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import xberg
+import kreuzberg as xberg
 
 
 def base_config(*, force_ocr: bool = False) -> "xberg.ExtractionConfig":
