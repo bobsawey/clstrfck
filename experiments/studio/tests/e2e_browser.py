@@ -124,10 +124,13 @@ def main():
         # --- internal drag/reorder still works (project material order)
         page.goto(url + "#project/p1/material"); page.wait_for_selector(".project-evidence .evidence-row")
         before = page.locator(".project-evidence .row-title").all_inner_texts()
-        page.locator(".project-evidence .evidence-row").nth(1).drag_to(page.locator(".project-evidence .evidence-row").nth(0))
-        page.wait_for_timeout(300)
+        page.evaluate("""()=>{const rows=document.querySelectorAll('#view-body .project-evidence .evidence-row'),dt=new DataTransfer();
+          rows[1].dispatchEvent(new DragEvent('dragstart',{bubbles:true,cancelable:true,dataTransfer:dt}));
+          for(const t of ['dragover','drop'])rows[0].dispatchEvent(new DragEvent(t,{bubbles:true,cancelable:true,dataTransfer:dt}));
+          rows[1].dispatchEvent(new DragEvent('dragend',{bubbles:true,dataTransfer:dt}));}""")
+        page.wait_for_timeout(200)
         after = page.locator(".project-evidence .row-title").all_inner_texts()
-        check(after == [before[1], before[0]], "in-app drag reorder still works")
+        check(after[:2] == [before[1], before[0]], "in-app drag reorder still works (%s -> %s)" % (before, after))
 
         # --- export workspace, restore in a fresh browser context
         page.click("[data-action=settings]"); page.wait_for_selector("#storage-line:has-text('IndexedDB')")
@@ -161,7 +164,7 @@ def main():
         # --- two windows: remote update + stale write protection
         a = page; b = ctx.new_page(); b.on("pageerror", lambda e: errors.append("b: " + str(e)))
         b.goto(url + "#project/p1/editor"); b.wait_for_selector(".block-text")
-        a.goto(url + "#project/p1/editor"); a.wait_for_selector(".block-text")
+        a.goto(url + "#project/p1/editor"); a.reload(); a.wait_for_selector(".block-text")
         a.locator(".block-text").first.fill("Changed in window A.")
         b.wait_for_function("document.querySelector('.block-text').value==='Changed in window A.'", timeout=5000)
         check(True, "second window picks up the change")
