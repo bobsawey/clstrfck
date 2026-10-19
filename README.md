@@ -2,6 +2,9 @@
 
 A public scratch space for data mining and automation experiments.
 
+__*This repo is changing swiftly now that I've finallly had some time to begin cleaning and organizing and further aiming toward the emerging goals of creating a personal document and knowledge graph type thing that can do really neat stuff and doesn't harshly rely on LLM's for everything and with an interface in the future that we hope will be nice and of great utility.*__
+
+
 ## Highlight: extraction-pipeline
 
 The most active and functional project here is
