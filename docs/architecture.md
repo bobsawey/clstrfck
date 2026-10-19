@@ -112,6 +112,8 @@ CREATE CONSTRAINT doc_id IF NOT EXISTS FOR (d:Doc) REQUIRE d.id IS UNIQUE;
 CREATE CONSTRAINT chunk_id IF NOT EXISTS FOR (c:Chunk) REQUIRE c.id IS UNIQUE;
 CREATE INDEX idx_chunk_embed IF NOT EXISTS FOR (c:Chunk) ON (c.embedding)
   OPTIONS {indexProvider:'vector-1.0', indexConfig:{'vector.dimensions':768, 'vector.similarity_function':'cosine'}};
-CALL db.index.fulltext.createNodeIndex('idx_chunk_fulltext',['Chunk'],['text','title']);
+
+CREATE FULLTEXT INDEX idx_chunk_fulltext IF NOT EXISTS
+FOR (c:Chunk) ON EACH [c.text, c.title];
 ```
 

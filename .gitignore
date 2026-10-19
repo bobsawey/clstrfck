@@ -211,3 +211,9 @@ data/*
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Claude Code local settings
+**/.claude/settings.local.json
+
+# Extraction pipeline run outputs
+work/

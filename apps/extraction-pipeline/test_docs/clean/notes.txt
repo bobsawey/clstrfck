@@ -1,0 +1,5 @@
+Decision: use blake3 for content hashing.
+Task: write a migration script by end of quarter.
+Claim: blake3 is faster than sha256 on modern CPUs.
+Question: is blake3 available on all target platforms?
+Reference: https://github.com/BLAKE3-team/BLAKE3
