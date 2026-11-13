@@ -20,6 +20,20 @@ It supersedes the earlier mining-pipeline stubs in `apps/miner` and the
 design sketches in `docs/mining-prep.md` / `docs/architecture.md`, which are
 kept as reference.
 
+## Exploration: hi-fi functional mockup
+https://clstrfckstudiomock.vercel.app/
+
+A throwaway prototype I directed coding agents to build quickly, to test the interaction model before committing to a real front end. It's deliberately not the final direction. What it taught me:
+- [lesson 1, e.g. what felt wrong about the layout or flow]
+- [lesson 2]
+- [what the real front end will do differently]
+
+The information architecture is going to be a real beast to chunk through so I needed help by making pretty stuff that is responsive that in some ways tries to resemble the sorts of things I want to do but totally is way off in a lot of ways.
+
+You know... Robust, but not completely with it: something hours of vibe coding can always bring. That way we can actually take an architectural / system thinking approach here and actually write specs to follow based on carefully diagrammed and deeply considered stuff. I'll try to provide examples IA guidance that meets my standards and approaches to better reflect the level of quality I hope to have in the design documents for this at some point.
+
+note: many things below this line are going to be out of date in some way but I'm incrementing here and it will stay until I've cleared things up.
+
 ## Layout
 
 - `apps/` – runnable command line tools
@@ -40,6 +54,7 @@ kept as reference.
 <del>pip install -e libs/clusterkit</del>
 <del>pip install -e libs/atzmo</del>
 <del>pip install -e apps/rag-soup</del>
+
 
 
 Run tests with:
