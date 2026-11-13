@@ -34,13 +34,13 @@ kept as reference.
   (extraction-pipeline keeps its own `tests/` inside its directory)
 - `data/` – placeholder for raw and processed datasets (ignored)
 
-## Getting Started
 
-```sh
+*again, there is a lot changing with the repo at the moment. things will hopefully be more grounded soon ;)*
+<del>
 pip install -e libs/clusterkit
 pip install -e libs/atzmo
 pip install -e apps/rag-soup
-```
+</del>
 
 Run tests with:
 
