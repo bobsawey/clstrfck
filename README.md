@@ -23,10 +23,7 @@ kept as reference.
 ## Exploration: hi-fi functional mockup
 https://clstrfckstudiomock.vercel.app/
 
-A throwaway prototype I directed coding agents to build quickly, to test the interaction model before committing to a real front end. It's deliberately not the final direction. What it taught me:
-- [lesson 1, e.g. what felt wrong about the layout or flow]
-- [lesson 2]
-- [what the real front end will do differently]
+A throwaway prototype I directed coding agents to build quickly, to test the interaction model before committing to a real front end. It's deliberately not the final direction. Baby steps..
 
 The information architecture is going to be a real beast to chunk through so I needed help by making pretty stuff that is responsive that in some ways tries to resemble the sorts of things I want to do but totally is way off in a lot of ways.
 
