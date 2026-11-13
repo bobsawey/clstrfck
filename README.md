@@ -1,6 +1,6 @@
 # clstrfck
 
-A public scratch space for data mining and automation experiments.
+This project is pivoting toward an ambitious attempt to build personal knowledge graphing and data tracking and provenance solutions I've been dreaming up for some time. Still quite a bit to document about this and will continue to update this README accordingly.
 
 __*This repo is changing swiftly now that I've finallly had some time to begin cleaning and organizing and further aiming toward the emerging goals of creating a personal document and knowledge graph type thing that can do really neat stuff and doesn't harshly rely on LLM's for everything and with an interface in the future that we hope will be nice and of great utility.*__
 
